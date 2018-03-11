@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+{% block body %}
+<h2>Kunder</h2>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Namn</th>
+            <th>Telefon</th>
+            <th>E-post</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for c in customers -%}
+            <tr>
+                <td>{{c.name}}</td>
+                <td>{{c.phone}}</td>
+                <td>{{c.email}}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

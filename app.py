@@ -1,7 +1,6 @@
 from flask import Flask, render_template, request, redirect, session, url_for
 from flask_sqlalchemy import SQLAlchemy
 from functools import wraps
-import sampledata
 from sqlalchemy.orm import composite
 
 app = Flask(__name__)
@@ -81,6 +80,23 @@ def require_login(resource):
 @require_login
 def index():
     return render_template('layout.html', name='Kristoffer', users=User.query.all())
+
+@app.route('/customers')
+@require_login
+def customers():
+    page = int(request.args.get('page', 1))
+    pageSize = int(request.args.get('pageSize', 15))
+    filter = request.args.get('filter', None)
+
+    q = Customer.query
+    if filter:
+        q = q.filter(getattr(Customer, 'name').like('%{}%'.format(filter)))
+    q = q.offset((page - 1) * pageSize)
+    c = q.count()
+    print(c)
+    customers = q.limit(pageSize)
+    return render_template('customers.html', customers=customers)
+    #return render_template('customers.html', customers=Customer.query.offset((page - 1) * pageSize).limit(pageSize))
 
 @app.route('/logout')
 def logout():
