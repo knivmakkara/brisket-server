@@ -1,6 +1,8 @@
 from flask import Flask, render_template, request, redirect, session, url_for
 from flask_sqlalchemy import SQLAlchemy
 from functools import wraps
+import sampledata
+from sqlalchemy.orm import composite
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
@@ -10,17 +12,57 @@ db = SQLAlchemy(app)
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(80), unique=True, nullable=False)
-    password = db.Column(db.String(80), unique=True, nullable=False)
+    username = db.Column(db.String, unique=True, nullable=False)
+    password = db.Column(db.String, unique=True, nullable=False)
 
-    def __repr__(self):
-        return '<User %r>' % self.username
+def __repr__(self):
+    return '<User %r>' % self.username
+
+class Address:
+    def __init__(self, row1, row2, zip_code, postal):
+        self.row1, self.row2, self.zip_code, self.postal = row1, row2, zip_code, postal
+    
+    def __composite_values__(self):
+        return self.row1, self.row2, self.zip_code, self.postal
+
+    def __eq__(self, other):
+        return isinstance(other, Address) and self.__composite_values__() == other.__composite_values__()
+    
+    def __ne__(self,other):
+        return not self.__eq__(other)
+
+
+class Customer(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String, unique=True, nullable=False)
+    phone = db.Column(db.String)
+    email = db.Column(db.String)
+    notes = db.Column(db.String)
+
+    invoice_row1 = db.Column(db.String)
+    invoice_row2 = db.Column(db.String)
+    invoice_zip_code = db.Column(db.String)
+    invoice_postal = db.Column(db.String)
+
+    visitation_row1 = db.Column(db.String)
+    visitation_row2 = db.Column(db.String)
+    visitation_zip_code = db.Column(db.String)
+    visitation_postal = db.Column(db.String)
+
+    invoice_address = composite(Address, invoice_row1, invoice_row2, invoice_zip_code, invoice_postal)
+    visitation_address = composite(Address, visitation_row1, visitation_row2, visitation_zip_code, visitation_postal)
 
 db.create_all()
 
 def sample_data(db):
     u1 = User(username='niklas', password='niklas123')
     db.session.add(u1)
+    db.session.commit()
+
+    for i in range(100):
+        attrs = 'name', 'phone', 'email', 'notes', 'invoice_row1', 'invoice_row2', 'invoice_zip_code', 'invoice_postal'
+        c = Customer(**{v: 'Customer {} {}'.format(i, v) for v in attrs})
+        db.session.add(c)
     db.session.commit()
 
 sample_data(db)
@@ -40,6 +82,11 @@ def require_login(resource):
 def index():
     return render_template('layout.html', name='Kristoffer', users=User.query.all())
 
+@app.route('/logout')
+def logout():
+    session.pop('logged_in_user', None)
+    return redirect(url_for('index'))
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     error = None
@@ -53,12 +100,6 @@ def login():
             error = 'Felaktigt användarnamn eller lösenord'
 
     return render_template('login.html', error=error)
-
-
-
-
-
-
 
 
 if __name__ == '__main__':
