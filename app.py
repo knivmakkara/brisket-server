@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, session, url_for
 from flask_sqlalchemy import SQLAlchemy
 from functools import wraps
 from sqlalchemy.orm import composite
+from forms import CustomerForm
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
@@ -34,6 +35,7 @@ class Address:
 class Customer(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, unique=True, nullable=False)
+    contact = db.Column(db.String)
     phone = db.Column(db.String)
     email = db.Column(db.String)
     notes = db.Column(db.String)
@@ -59,7 +61,7 @@ def sample_data(db):
     db.session.commit()
 
     for i in range(100):
-        attrs = 'name', 'phone', 'email', 'notes', 'invoice_row1', 'invoice_row2', 'invoice_zip_code', 'invoice_postal'
+        attrs = 'name', 'contact' ,'phone', 'email', 'notes', 'invoice_row1', 'invoice_row2', 'invoice_zip_code', 'invoice_postal', 'visitation_row1', 'visitation_row2', 'visitation_zip_code', 'visitation_postal'
         c = Customer(**{v: 'Customer {} {}'.format(i, v) for v in attrs})
         db.session.add(c)
     db.session.commit()
@@ -74,29 +76,48 @@ def require_login(resource):
         return resource(*args, **kwargs)
     return wrapper
 
-
+@app.context_processor
+def utility_processor():
+    return dict(merge=lambda a,b: {**a, **b})
 
 @app.route('/')
 @require_login
 def index():
     return render_template('layout.html', name='Kristoffer', users=User.query.all())
 
+@app.route('/customers/<int:id>', methods=['POST'])
+def customer(id):
+    customer = Customer.query.get(id)
+    form = CustomerForm(request.form)
+    if form.validate():
+        form.populate_obj(customer)
+        db.session.add(customer)
+        db.session.commit()
+        return redirect(url_for('customers'))
+    return render_template('edit_customer.html', form=form, customer=customer)
+
+@app.route('/customers/<int:id>/edit')
+def edit_customer(id):
+    customer = Customer.query.get(id)
+    form = CustomerForm(obj=customer)
+    return render_template('edit_customer.html', form=form, customer=customer)
+
 @app.route('/customers')
 @require_login
 def customers():
     page = int(request.args.get('page', 1))
-    pageSize = int(request.args.get('pageSize', 15))
+    page_size = int(request.args.get('page_size', 10))
     filter = request.args.get('filter', None)
 
     q = Customer.query
     if filter:
         q = q.filter(getattr(Customer, 'name').like('%{}%'.format(filter)))
-    q = q.offset((page - 1) * pageSize)
-    c = q.count()
-    print(c)
-    customers = q.limit(pageSize)
-    return render_template('customers.html', customers=customers)
-    #return render_template('customers.html', customers=Customer.query.offset((page - 1) * pageSize).limit(pageSize))
+    count = q.count()
+
+    q = q.offset((page - 1) * page_size)
+    customers = q.limit(page_size)
+    total_pages = (count // page_size) + (0 if (count % page_size) == 0 else 1)
+    return render_template('customers.html', customers=customers, page=page, page_size=page_size, count=count, total_pages=total_pages)
 
 @app.route('/logout')
 def logout():

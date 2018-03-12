@@ -1,0 +1,68 @@
+{% extends "layout.html" %} {% block body %}
+<h2>Ändra </h2>
+
+{% macro render_field(field) %}
+<div class="form-group">
+  {{ field.label }} {{ field(**kwargs)|safe }} {% if field.errors %}
+  <ul class=errors>
+    {% for error in field.errors %}
+    <li>{{ error }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+</div>
+{% endmacro %}
+
+<form method="POST" action="{{ url_for('customer', id=customer.id) }}">
+  {{ form.csrf_token }}
+  <div class="card mb-3">
+      <div class="card-header">
+        Kund
+      </div>
+      <div class="card-body">
+          <div class="row">
+              <div class="col-md">{{ render_field(form.name, class='form-control') }}</div>
+              <div class="col-md">{{ render_field(form.email, class='form-control') }}</div>
+            </div>
+            <div class="row">
+                <div class="col-md">{{ render_field(form.phone, class='form-control') }}</div>
+                <div class="col-md">{{ render_field(form.contact, class='form-control') }}</div>
+            </div>
+            <div class="row">
+                <div class="col">{{ render_field(form.notes, class='form-control') }}</div>
+            </div>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md">
+          <div class="card">
+              <div class="card-header">
+                Faktureringsadress
+              </div>
+              <div class="card-body">
+                      {{ render_field(form.invoice_row1, class='form-control') }}
+                      {{ render_field(form.invoice_row2, class='form-control') }}
+                      {{ render_field(form.invoice_zip_code, class='form-control') }}
+                      {{ render_field(form.invoice_postal, class='form-control') }}
+              </div>
+            </div>
+      </div>
+      <div class="col-md">
+          <div class="card">
+              <div class="card-header">
+                Besöksadress
+              </div>
+              <div class="card-body">
+                      {{ render_field(form.visitation_row1, class='form-control') }}
+                      {{ render_field(form.visitation_row2, class='form-control') }}
+                      {{ render_field(form.visitation_zip_code, class='form-control') }}
+                      {{ render_field(form.visitation_postal, class='form-control') }}
+              </div>
+            </div>
+      </div>
+    </div>
+
+  <input value="Spara" type="submit" class="btn btn-primary">
+</form>
+
+{% endblock %}

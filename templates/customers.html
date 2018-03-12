@@ -2,12 +2,18 @@
 {% block body %}
 <h2>Kunder</h2>
 
-<table class="table table-striped">
+<table class="table table-hover table-striped">
     <thead>
         <tr>
-            <th>Namn</th>
+            <th>
+                <form class="form-inline" method="GET" action="{{url_for('customers', **request.args)}}">
+                    <label for="filterText">Namn</label>
+                    <input class="form-control" value="{{request.args.filter}}" name="filter" type="text">
+                </form>
+            </th>
             <th>Telefon</th>
             <th>E-post</th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -16,8 +22,25 @@
                 <td>{{c.name}}</td>
                 <td>{{c.phone}}</td>
                 <td>{{c.email}}</td>
+                <td>
+
+                </td>
             </tr>
         {% endfor %}
     </tbody>
 </table>
+
+<nav>
+    <ul class="pagination">
+        {% for i in range(total_pages) -%}
+        {% if i == page - 1 %}
+        <li class="page-item active">
+        {% else %}
+        <li class="page-item">
+        {% endif %}
+            <a class="page-link" href="{{ url_for('customers', **merge(request.args, {'page': i + 1}))  }}">{{i + 1}}</a>
+        </li>
+        {% endfor %}
+    </ul>
+</nav>
 {% endblock %}
