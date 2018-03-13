@@ -13,7 +13,7 @@
 </div>
 {% endmacro %}
 
-<form method="POST" action="{{ url_for('customer', id=customer.id) }}">
+<form method="POST" action="{{ url_for('customer', **{'id': customer.id, '__METHOD_OVERRIDE__': 'PATCH'}) }}">
   {{ form.csrf_token }}
   <div class="card mb-3">
       <div class="card-header">

@@ -11,6 +11,7 @@
                     <input class="form-control" value="{{request.args.filter}}" name="filter" type="text">
                 </form>
             </th>
+            <th>Kontaktperson</th>
             <th>Telefon</th>
             <th>E-post</th>
             <th></th>
@@ -20,9 +21,12 @@
         {% for c in customers -%}
             <tr>
                 <td>{{c.name}}</td>
+                <td>{{c.contact}}</td>
                 <td>{{c.phone}}</td>
                 <td>{{c.email}}</td>
                 <td>
+                    <a href="{{url_for('edit_customer', id=c.id)}}"><i class="fas fa-edit"></i></a>
+                </td>
 
                 </td>
             </tr>

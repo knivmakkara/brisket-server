@@ -3,10 +3,13 @@ from flask_sqlalchemy import SQLAlchemy
 from functools import wraps
 from sqlalchemy.orm import composite
 from forms import CustomerForm
+from method_rewrite import MethodRewriteMiddleware
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
 app.secret_key = 'key123'
+app.wsgi_app = MethodRewriteMiddleware(app.wsgi_app)
+
 
 db = SQLAlchemy(app)
 
@@ -85,7 +88,8 @@ def utility_processor():
 def index():
     return render_template('layout.html', name='Kristoffer', users=User.query.all())
 
-@app.route('/customers/<int:id>', methods=['POST'])
+@app.route('/customers/<int:id>', methods=['PATCH'])
+@require_login
 def customer(id):
     customer = Customer.query.get(id)
     form = CustomerForm(request.form)
@@ -97,6 +101,7 @@ def customer(id):
     return render_template('edit_customer.html', form=form, customer=customer)
 
 @app.route('/customers/<int:id>/edit')
+@require_login
 def edit_customer(id):
     customer = Customer.query.get(id)
     form = CustomerForm(obj=customer)
@@ -137,7 +142,6 @@ def login():
             error = 'Felaktigt användarnamn eller lösenord'
 
     return render_template('login.html', error=error)
-
 
 if __name__ == '__main__':
     app.run(debug=True)
