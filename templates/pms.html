@@ -1,39 +1,39 @@
 {% extends "layout.html" %}
 {% from "partials/form_helpers.html" import table_header with context %}
 {% block body %}
-<h2>Kunder</h2>
+<h2>PM</h2>
 
 <div>
     <div class="float-left">
-            <form class="form-inline" method="GET" action="{{url_for('customers', **request.args)}}">
+            <form class="form-inline" method="GET" action="{{url_for('pms', **request.args)}}">
                     <input class="form-control" value="{{request.args.filter}}" name="filter" type="text">
             </form>
     </div>
     <div class="text-right">
-            <a class="btn btn-success" href="{{ url_for('new_customer') }}">Ny kund</a>
+            <a class="btn btn-success" href="{{ url_for('new_pm') }}">Nytt PM</a>
         </div>
 </div>
 
 <table class="table table-hover table-striped mt-3">
     <thead>
         <tr>
-            {{table_header('name', 'Namn', 'customers')}}
-            {{table_header('contact', 'Kontaktperson', 'customers')}}
-            {{table_header('phone', 'Telefon', 'customers')}}
-            {{table_header('email', 'E-post', 'customers')}}
+            {{table_header('name', 'Namn', 'pms')}}
+            {{table_header('contact', 'Kontaktperson', 'pms')}}
+            {{table_header('phone', 'Telefon', 'pms')}}
+            {{table_header('email', 'E-post', 'pms')}}
             <th></th>
         </tr>
     </thead>
     <tbody>
-        {% for c in customers -%}
+        {% for c in pms -%}
             <tr>
                 <td>{{c.name}}</td>
                 <td>{{c.contact}}</td>
                 <td>{{c.phone}}</td>
                 <td>{{c.email}}</td>
                 <td>
-                    <a href="{{url_for('edit_customer', id=c.id)}}"><i class="fas fa-edit"></i></a>
-                    <a href="{{url_for('customer', **{'id': c.id, '__METHOD_OVERRIDE__': 'DELETE'})}}"><i class="fas fa-trash"></i></a>
+                    <a href="{{url_for('edit_pm', id=c.id)}}"><i class="fas fa-edit"></i></a>
+                    <a href="{{url_for('pm', **{'id': c.id, '__METHOD_OVERRIDE__': 'DELETE'})}}"><i class="fas fa-trash"></i></a>
                 </td>
 
                 </td>
@@ -50,7 +50,7 @@
         {% else %}
         <li class="page-item">
         {% endif %}
-            <a class="page-link" href="{{ url_for('customers', **merge(request.args, {'page': i + 1}))  }}">{{i + 1}}</a>
+            <a class="page-link" href="{{ url_for('pms', **merge(request.args, {'page': i + 1}))  }}">{{i + 1}}</a>
         </li>
         {% endfor %}
     </ul>

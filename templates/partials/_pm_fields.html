@@ -1,0 +1,90 @@
+{% from "partials/form_helpers.html" import render_field %}
+
+<div class="row">
+  <div class="col-md">
+      <div class="card mb-3">
+          <div class="card-header">
+            Kund
+          </div>
+          <div class="card-body">
+              <div class="row">
+                  <div class="col-md">{{ render_field(form.name, class='form-control') }}</div>
+                  <div class="col-md">{{ render_field(form.email, class='form-control') }}</div>
+              </div>
+              <div class="row">
+                    <div class="col-md">{{ render_field(form.phone, class='form-control') }}</div>
+                    <div class="col-md">{{ render_field(form.contact, class='form-control') }}</div>
+              </div>
+              <div class="row">
+                    <div class="col">{{ render_field(form.notes, class='form-control', rows='5') }}</div>
+              </div>
+          </div>
+      </div>
+      
+      <div class="row mb-3">
+        <div class="col-md">
+            <div class="card">
+                <div class="card-header">
+                  Faktureringsadress
+                </div>
+                <div class="card-body">
+                        {{ render_field(form.invoice_row1, class='form-control') }}
+                        {{ render_field(form.invoice_row2, class='form-control') }}
+                        {{ render_field(form.invoice_zip_code, class='form-control') }}
+                        {{ render_field(form.invoice_postal, class='form-control') }}
+                </div>
+              </div>
+        </div>
+        <div class="col-md">
+            <div class="card">
+                <div class="card-header">
+                  Besöksadress
+                </div>
+                <div class="card-body">
+                        {{ render_field(form.visitation_row1, class='form-control') }}
+                        {{ render_field(form.visitation_row2, class='form-control') }}
+                        {{ render_field(form.visitation_zip_code, class='form-control') }}
+                        {{ render_field(form.visitation_postal, class='form-control') }}
+                </div>
+              </div>
+        </div>
+      </div>
+  </div>
+  <div class="col-md">
+      <div class="card mb-3">
+          <div class="card-header">
+            Beställning
+          </div>
+          <div class="card-body">
+              <div class="row">
+                <div class="col-md">
+                    {{ render_field(form.due, class='form-control') }}
+                </div>
+                <div class="col-md">
+                    {{ render_field(form.number_guests, class='form-control') }}
+                </div>
+              </div>
+              <div class="row">
+                  <div class="col-md">
+                      {{ render_field(form.created_by, class='form-control') }}
+                  </div>
+                  <div class="col-md">
+                      {{ render_field(form.delivery_type, class='form-control') }}
+                  </div>
+              </div>
+              <div class="row">
+                  <div class="col-md">
+                      {{ render_field(form.staff, class='form-control') }}
+                  </div>
+                  <div class="col-md">
+                      {{ render_field(form.rental, class='form-control') }}
+                  </div>
+              </div>
+              {{ render_field(form.menu, class='form-control', rows=5) }}
+              {{ render_field(form.allergies, class='form-control', rows=5) }}
+              {{ render_field(form.misc, class='form-control', rows=5) }}
+          </div>
+      </div>
+    </div>
+</div>
+

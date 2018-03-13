@@ -9,3 +9,19 @@
   {% endif %}
 </div>
 {% endmacro %}
+
+{% macro table_header(field, label, link_to) %}
+<th>
+  {% if request.args['order_by'] == field %}
+    {% set order = request.args['order'] if request.args['order'] in ['ASC', 'DESC'] else 'ASC' %}
+    <a href="{{ url_for(link_to, **merge(request.args, {'order': {'ASC': 'DESC', 'DESC': 'ASC'}[order]} )) }}">{{label}}</a>
+    {% if order == 'ASC' %}
+      <i class="fas fa-angle-down">
+    {% else %}
+      <i class="fas fa-angle-up">
+    {% endif %}
+  {% else %}
+    <a href="{{ url_for(link_to, **merge(request.args, {'order': 'ASC', 'order_by': field} )) }}">{{label}}</a>
+  {% endif %}
+</th>
+{% endmacro %}

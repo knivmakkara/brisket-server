@@ -10,6 +10,6 @@ class MethodRewriteMiddleware(object):
             args = url_decode(environ['QUERY_STRING'])
             method = args.get('__METHOD_OVERRIDE__')
             if method:
-                method = method.encode('ascii', 'replace')
+                #method = method.encode('ascii', 'replace')
                 environ['REQUEST_METHOD'] = method
         return self.app(environ, start_response)
