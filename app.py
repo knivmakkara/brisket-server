@@ -107,21 +107,39 @@ def edit_customer(id):
     form = CustomerForm(obj=customer)
     return render_template('edit_customer.html', form=form, customer=customer)
 
-@app.route('/customers')
+@app.route('/customers/new')
+@require_login
+def new_customer():
+    form = CustomerForm()
+    return render_template('new_customer.html', form=form)
+
+@app.route('/customers', methods=['GET','POST'])
 @require_login
 def customers():
-    page = int(request.args.get('page', 1))
-    page_size = int(request.args.get('page_size', 10))
-    filter = request.args.get('filter', None)
+    if request.method == 'POST':
+        form = CustomerForm(request.form)
+        customer = Customer()
 
-    q = Customer.query
-    if filter:
-        q = q.filter(getattr(Customer, 'name').like('%{}%'.format(filter)))
-    count = q.count()
+        if form.validate():
+            form.populate_obj(customer)
+            db.session.add(customer)
+            db.session.commit()
+            return redirect(url_for('customers'))
+        else:
+            return render_template('new_customer.html', form=form)
+    else:
+        page = int(request.args.get('page', 1))
+        page_size = int(request.args.get('page_size', 10))
+        filter = request.args.get('filter', None)
 
-    q = q.offset((page - 1) * page_size)
-    customers = q.limit(page_size)
-    total_pages = (count // page_size) + (0 if (count % page_size) == 0 else 1)
+        q = Customer.query
+        if filter:
+            q = q.filter(getattr(Customer, 'name').like('%{}%'.format(filter)))
+        count = q.count()
+
+        q = q.offset((page - 1) * page_size)
+        customers = q.limit(page_size)
+        total_pages = (count // page_size) + (0 if (count % page_size) == 0 else 1)
     return render_template('customers.html', customers=customers, page=page, page_size=page_size, count=count, total_pages=total_pages)
 
 @app.route('/logout')
