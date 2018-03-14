@@ -11,7 +11,7 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
 app.secret_key = 'key123'
 app.wsgi_app = MethodRewriteMiddleware(app.wsgi_app)
-
+app.config['TEMPLATES_AUTO_RELOAD'] = True
 
 db = SQLAlchemy(app)
 
@@ -126,6 +126,11 @@ def require_login(resource):
 @app.context_processor
 def utility_processor():
     return dict(merge=lambda a,b: {**a, **b})
+
+@app.template_filter('date_time')
+def date_time(s):
+    return s.strftime('%Y-%m-%d %H:%M')
+
 
 @app.route('/')
 @require_login

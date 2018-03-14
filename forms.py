@@ -36,7 +36,7 @@ class PromemoriaForm(FlaskForm):
     visitation_zip_code = StringField('Postkod')
     visitation_postal = StringField('Postort')
 
-    due = DateTimeField('Datum/Tid')
+    due = DateTimeField('Datum/Tid', format='%Y-%m-%d %H:%M')
     number_guests = IntegerField('Antal gäster')
     menu = TextAreaField('Meny')
     allergies = TextAreaField('Allergier')
