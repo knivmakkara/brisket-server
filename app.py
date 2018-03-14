@@ -183,7 +183,20 @@ def edit_pm(id):
 @app.route('/pm/<int:id>', methods=['PATCH', 'DELETE'])
 @require_login
 def pm(id):
-    return "TODO"
+    pm = Promemoria.query.get(id)
+    if request.method == 'DELETE':
+        db.session.delete(pm)
+        db.session.commit()
+        return redirect(url_for('pms'))
+    else:
+        form = PromemoriaForm(request.form)
+        if form.validate():
+            form.populate_obj(pm)
+            db.session.add(pm)
+            db.session.commit()
+            return redirect(url_for('pms'))
+        else:
+            return render_template('edit_pm.html', form=form, pm=pm)
 
 @app.route('/pm', methods=['GET','POST'])
 @require_login
