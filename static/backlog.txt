@@ -4,3 +4,4 @@ Datepicker för PM
 Refaktorisera paginering
 Betalning PM
 Snygga till validering av formulär
+Flytta ny kund/pm till menyn
