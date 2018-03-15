@@ -24,11 +24,11 @@ def __repr__(self):
     return '<User %r>' % self.username
 
 class Address:
-    def __init__(self, row1, row2, zip_code, postal):
-        self.row1, self.row2, self.zip_code, self.postal = row1, row2, zip_code, postal
+    def __init__(self, row1, row2, zip_code, post_town):
+        self.row1, self.row2, self.zip_code, self.post_town = row1, row2, zip_code, post_town
     
     def __composite_values__(self):
-        return self.row1, self.row2, self.zip_code, self.postal
+        return self.row1, self.row2, self.zip_code, self.post_town
 
     def __eq__(self, other):
         return isinstance(other, Address) and self.__composite_values__() == other.__composite_values__()
@@ -47,15 +47,15 @@ class Customer(db.Model):
     invoice_row1 = db.Column(db.String)
     invoice_row2 = db.Column(db.String)
     invoice_zip_code = db.Column(db.String)
-    invoice_postal = db.Column(db.String)
+    invoice_post_town = db.Column(db.String)
 
     visitation_row1 = db.Column(db.String)
     visitation_row2 = db.Column(db.String)
     visitation_zip_code = db.Column(db.String)
-    visitation_postal = db.Column(db.String)
+    visitation_post_town = db.Column(db.String)
 
-    invoice_address = composite(Address, invoice_row1, invoice_row2, invoice_zip_code, invoice_postal)
-    visitation_address = composite(Address, visitation_row1, visitation_row2, visitation_zip_code, visitation_postal)
+    invoice_address = composite(Address, invoice_row1, invoice_row2, invoice_zip_code, invoice_post_town)
+    visitation_address = composite(Address, visitation_row1, visitation_row2, visitation_zip_code, visitation_post_town)
 
 class Promemoria(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -68,12 +68,12 @@ class Promemoria(db.Model):
     invoice_row1 = db.Column(db.String)
     invoice_row2 = db.Column(db.String)
     invoice_zip_code = db.Column(db.String)
-    invoice_postal = db.Column(db.String)
+    invoice_post_town = db.Column(db.String)
 
     visitation_row1 = db.Column(db.String)
     visitation_row2 = db.Column(db.String)
     visitation_zip_code = db.Column(db.String)
-    visitation_postal = db.Column(db.String)
+    visitation_post_town = db.Column(db.String)
 
     due = db.Column(db.DateTime)
     number_guests = db.Column(db.Integer)
@@ -85,14 +85,6 @@ class Promemoria(db.Model):
     rental = db.Column(db.String)
     misc = db.Column(db.String)
 
-	#private String menu;
-	#private String allergies;
-	#private String receivedBy;
-	#private String deliveryType;
-	#private String staff;
-	#private String rental;
-	#private String misc;
-
 db.create_all()
 
 def sample_data(db):
@@ -101,13 +93,13 @@ def sample_data(db):
     db.session.commit()
 
     for i in range(100):
-        attrs = 'name', 'contact' ,'phone', 'email', 'notes', 'invoice_row1', 'invoice_row2', 'invoice_zip_code', 'invoice_postal', 'visitation_row1', 'visitation_row2', 'visitation_zip_code', 'visitation_postal'
+        attrs = 'name', 'contact' ,'phone', 'email', 'notes', 'invoice_row1', 'invoice_row2', 'invoice_zip_code', 'invoice_post_town', 'visitation_row1', 'visitation_row2', 'visitation_zip_code', 'visitation_post_town'
         c = Customer(**{v: 'Customer {} {}'.format(i, v) for v in attrs})
         db.session.add(c)
 
     for i in range(100):
-        attrs = 'name', 'contact' ,'phone', 'email', 'notes', 'invoice_row1', 'invoice_row2', 'invoice_zip_code', 'invoice_postal', 'visitation_row1', 'visitation_row2', 'visitation_zip_code', 'visitation_postal'
-        c = Promemoria(**{v: 'PM {} {}'.format(i, v) for v in attrs})
+        attrs = 'name', 'contact' ,'phone', 'email', 'notes', 'invoice_row1', 'invoice_row2', 'invoice_zip_code', 'invoice_post_town', 'visitation_row1', 'visitation_row2', 'visitation_zip_code', 'visitation_post_town'
+        c = Promemoria(**{v: 'Customer {} {}'.format(i, v) for v in attrs})
         c.due = datetime.datetime.now() - datetime.timedelta(days=i)
         db.session.add(c)
 
@@ -130,6 +122,11 @@ def utility_processor():
 @app.template_filter('date_time')
 def date_time(s):
     return s.strftime('%Y-%m-%d %H:%M')
+
+@app.template_filter('append_class')
+def append_class(d, class_name):
+    d['class'] =  ' '.join(d.get('class', '').split(' ') + [class_name])
+    return d
 
 
 @app.route('/')

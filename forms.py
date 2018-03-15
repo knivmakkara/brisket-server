@@ -12,12 +12,12 @@ class CustomerForm(FlaskForm):
     invoice_row1 = StringField('Address')
     invoice_row2 = StringField('')
     invoice_zip_code = StringField('Postkod')
-    invoice_postal = StringField('Postort')
+    invoice_post_town = StringField('Postort')
 
     visitation_row1 = StringField('Address')
     visitation_row2 = StringField('')
     visitation_zip_code = StringField('Postkod')
-    visitation_postal = StringField('Postort')
+    visitation_post_town = StringField('Postort')
 
 class PromemoriaForm(FlaskForm):
     name = StringField('Namn', validators=[DataRequired()])
@@ -29,12 +29,12 @@ class PromemoriaForm(FlaskForm):
     invoice_row1 = StringField('Address')
     invoice_row2 = StringField('')
     invoice_zip_code = StringField('Postkod')
-    invoice_postal = StringField('Postort')
+    invoice_post_town = StringField('Postort')
 
     visitation_row1 = StringField('Address')
     visitation_row2 = StringField('')
     visitation_zip_code = StringField('Postkod')
-    visitation_postal = StringField('Postort')
+    visitation_post_town = StringField('Postort')
 
     due = DateTimeField('Datum/Tid', format='%Y-%m-%d %H:%M')
     number_guests = IntegerField('Antal gäster')
