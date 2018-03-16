@@ -1,7 +1,7 @@
 PM från kundvy
 *Gör klart CRUD för PM
 Datepicker för PM
-Refaktorisera paginering
+*Refaktorisera paginering
 Betalning PM
 *Snygga till validering av formulär
-Flytta ny kund/pm till menyn
+*Flytta ny kund/pm till menyn

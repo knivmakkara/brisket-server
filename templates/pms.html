@@ -3,16 +3,9 @@
 {% block body %}
 <h2>PM</h2>
 
-<div>
-    <div class="float-left">
-            <form class="form-inline" method="GET" action="{{url_for('pms', **request.args)}}">
-                    <input class="form-control" value="{{request.args.filter}}" name="filter" type="text">
-            </form>
-    </div>
-    <div class="text-right">
-            <a class="btn btn-success" href="{{ url_for('new_pm') }}">Nytt PM</a>
-        </div>
-</div>
+<form class="form-inline" method="GET" action="{{url_for('pms', **request.args)}}">
+    <input class="form-control" value="{{request.args.filter}}" name="filter" type="text">
+</form> 
 
 <table class="table table-hover table-striped mt-3">
     <thead>
