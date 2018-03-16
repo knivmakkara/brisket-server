@@ -25,6 +25,7 @@
                 <td>{{c.phone}}</td>
                 <td>{{c.email}}</td>
                 <td class="text-right">
+                    <a href="{{url_for('new_pm', copy_from=c.id)}}"><i class="fas fa-file"></i></a>
                     <a href="{{url_for('edit_customer', id=c.id)}}"><i class="fas fa-edit"></i></a>
                     <a href="{{url_for('customer', **{'id': c.id, '__METHOD_OVERRIDE__': 'DELETE'})}}"><i class="fas fa-trash"></i></a>
                 </td>

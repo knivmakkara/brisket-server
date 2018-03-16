@@ -168,7 +168,13 @@ def new_customer():
 @app.route('/pm/new')
 @require_login
 def new_pm():
-    return render_template('new_pm.html', form=PromemoriaForm(request.args))
+    form = None
+    if 'copy_from' in request.args:
+        form = PromemoriaForm(obj=Customer.query.get(request.args['copy_from']))
+    else:
+        form = PromemoriaForm()
+
+    return render_template('new_pm.html', form=form)
 
 @app.route('/pm/<int:id>/edit')
 @require_login
